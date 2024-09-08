@@ -1,11 +1,12 @@
 using LAF.BusinessLogic.ExtensionMethods;
 using LAF.Models.Interfaces.Services;
-using LAF.Services.DataProviders;
 using LAF.Services.Middleware;
 
 //Using the new minimal config approach.
 
-// Config
+/*
+ * Config
+ */
 var config = new ConfigurationBuilder()
     .AddCommandLine(args)
     .AddEnvironmentVariables()
@@ -18,17 +19,19 @@ builder.Services.AddControllersWithViews();
 // ToDo: Should this be done after injecting the service? Can you do this both ways?
 builder.Services.AddSingleton<IConfiguration>(config);
 
-builder.Services.AddDataProviderServiceGroup(builder.Configuration);
+builder.Services
+    .AddDataProviderServiceConfig(builder.Configuration)
+    .AddDataProviderServiceGroup(builder.Configuration);
 
-// builder.Services.AddScoped<IDataProviderResolverService, DataProviderResolverService>();
-
-//TODO: Would be better if this could be done in the UseAgentMatchService extension method, so that we don't have to set both services independently.
 builder.Services.AddScoped<IAgentMatchLogProvider, AgentMatchLogProvider>();
 
 // builder.Services.AddAuthorization();
 // builder.Services.AddControllers();
 
-// Runtime environment.
+
+/*
+ * Runtime environment.
+ */
 builder.WebHost
     .UseKestrel()
     .UseContentRoot(Directory.GetCurrentDirectory());

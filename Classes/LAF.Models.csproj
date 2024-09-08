@@ -10,12 +10,17 @@
 </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Abstract\DataProvider.cs" />
     <Compile Remove="Interfaces\Services\IAgentDataProvider.cs" />
     <Compile Remove="Interfaces\Services\IDataProviderResolverService.cs" />
   </ItemGroup>
     
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <Folder Include="Abstract\" />
   </ItemGroup>
 
 </Project>

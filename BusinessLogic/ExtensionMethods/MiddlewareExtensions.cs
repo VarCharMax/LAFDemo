@@ -26,33 +26,22 @@ namespace LAF
             public static IServiceCollection AddDataProviderServiceConfig(
                  this IServiceCollection services, IConfiguration config)
             {
-                services.Configure<ServiceConfigurationOptions>(
-                   config.GetSection(ServiceConfigurationOptions.ServiceConfiguration));
+                var configTop = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
+                var providers = configTop.GetSection(DataProvidersOptions.DataProviders).GetChildren();
 
-                /*
-                var dataProviderList = services.AsEnumerable().Where(s => s is IAgentDataProvider).ToList();
-                // var servicesProvider = scope.ServiceProvider;
+                //TODO: Complete auto type creation.
+                foreach (var item in providers)
+                {
+                    var prov = item.GetRequiredSection("DataProvider").Get<DataProviderOptions>();
 
-                var topConfig = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
+                    if (prov != null)
+                    {
+                        // dataProviderOptionsDict.Add(prov.ServiceType, prov);
 
-                
-
-                services.AddOptions<DataProviderOptions>();
-
-                services.Configure<ServiceConfigurationOptions>(
-                    config.GetSection(ServiceConfigurationOptions.ServiceConfiguration));
-
-                var providers = config.GetSection(DataProviderOptions.DataProvider).Get<DataProviderOptions>();
-
-                var service1 = new MySQLRESTDataProvider(config);
-
-                services.AddOptions<DataProviderOptions>()
-                .Configure<MySQLRESTDataProvider>(
-                        (o, s) => o.ServiceUrl = "127.0.0.1");
-
-            
-                    services.Configure<ServiceConfigurationSettings>(config.GetSection(ServiceConfigurationSettings.DataServiceProviders.));
-                */
+                        services.Configure<MySQLRESTDataProviderOptions>(
+                            config.GetSection(DataProvidersOptions.DataProviders));
+                    }
+                }
 
                 return services;
             }
@@ -92,26 +81,7 @@ namespace LAF
                     {
                         if (serviceConfigNames.Contains(type.Name))
                         {
-                            Type? interfaceService = type.GetInterface("IAgentDataProvider");
-
-                            DataProviderOptions? param = dataProviderOptionsDict.GetValueOrDefault(type.Name);
-
-                            if (param != null)
-                            {
-                                IAgentDataProvider? dProv = (IAgentDataProvider?)Activator.CreateInstance(type, param);
-
-                                if (dProv != null)
-                                {
-                                    //Dummy object to satisy IServiceProvider parameter.
-                                    var obj1 = new object();
-
-                                    // services.AddScoped(type.GetInterface("IAgentDataProvider")!, type);
-
-                                    //Add Keyed service.
-                                    // TODO: Might not work becase of dummy ServiceProvider.
-                                    // services.Add(new ServiceDescriptor(interfaceService!, dProv.ServiceName, (obj1, dProv) => { return dProv!; }, ServiceLifetime.Scoped));
-                                }
-                            }
+                            services.AddScoped(typeof(IAgentDataProvider), type);
                         }
                     }
                 }
