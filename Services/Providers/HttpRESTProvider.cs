@@ -1,6 +1,7 @@
 ﻿using LAF.Models.BusinessObjects;
 using LAF.Services.Interfaces;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace LAF
 {
@@ -9,31 +10,66 @@ namespace LAF
         public class HttpRESTProvider : IHttpRESTProvider
         {
             private bool disposedValue;
-            private HttpClient _httpClient;
 
-            public HttpRESTProvider()
-            {
-                _httpClient = new HttpClient();
-            }
-
-            public Task<Agent> GetAgentAsync()
-            {
-                throw new NotImplementedException();
-            }
-
-            public async Task<List<Agent>> ListAgentsAsync(string sortBy)
+            public async Task<List<Agent>> ListAgentsAsync(string urlService)
             {
                 List<Agent> agentList = [];
-                using var response = await _httpClient.GetAsync($"{urlService}/api/Agents");
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                agentList = JsonConvert.DeserializeObject<List<Agent>>(apiResponse);
+                using (var httpClient = new HttpClient())
+                {
+                    using var response = await httpClient.GetAsync($"{urlService}/api/Agents");
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    agentList = JsonConvert.DeserializeObject<List<Agent>>(apiResponse);
+                }
 
                 return agentList;
             }
 
-            public Task<List<Agent>> GetAgentsAsync()
+            public async Task<List<Agent>> ListAgentsAsync(string urlService, string sortBy)
+            {
+                List<Agent> agentList = [];
+                using (var httpClient = new HttpClient())
+                {
+                    using var response = await httpClient.GetAsync($"{urlService}/api/Agents");
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    agentList = JsonConvert.DeserializeObject<List<Agent>>(apiResponse);
+                }
+
+                return agentList;
+            }
+
+            public Task<Agent> MatchAgentAsync(string urlService, MatchRequest details)
             {
                 throw new NotImplementedException();
+            }
+
+            public Task<Agent> MatchAgentAsync(string urlService)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<Agent> UpdateAgentAsync(string urlService, Agent agent)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<bool> DeleteAgentAsync(string urlService, string licenceNo)
+            {
+                throw new NotImplementedException();
+            }
+
+            public async Task<Agent> AddAgentAsync(string urlService, Agent newAgent)
+            {
+                Agent receivedAgent = new();
+                using (var httpClient = new HttpClient())
+                {
+                    StringContent content = new(JsonConvert.SerializeObject(newAgent), Encoding.UTF8, "application/json");
+
+                    using var response = await httpClient.PostAsync($"{urlService}/api/Agent", content);
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    receivedAgent = JsonConvert.DeserializeObject<Agent>(apiResponse);
+                }
+
+                return receivedAgent;
             }
 
             protected virtual void Dispose(bool disposing)

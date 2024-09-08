@@ -33,7 +33,7 @@ namespace LAF
             }
 
             // GET: AgentController/MatchAgent/5
-            public async Task<ActionResult> MatchAgent([FromBody] MatchRequest request)
+            public async Task<ActionResult> MatchAgentAsync([FromBody] MatchRequest request)
             {
                 int requestCount = 0;
 
@@ -67,7 +67,7 @@ namespace LAF
             }
 
             // GET: AgentController/ListAgents/{sortBy}
-            public async Task<ActionResult> ListAgents(string sortBy = "")
+            public async Task<ActionResult> ListAgentsAsync(string sortBy = "")
             {
                 var agents = await dataService!.ListAgentsAsync(sortBy);
 
@@ -78,7 +78,7 @@ namespace LAF
             [HttpPost]
             [ValidateAntiForgeryToken]
 
-            public async Task<IActionResult> AddAgent([FromBody] Agent newAgent)
+            public async Task<IActionResult> AddAgentAsync([FromBody] Agent newAgent)
             {
                 if (ModelState.IsValid)
                 {

@@ -30,20 +30,10 @@ namespace LAF
 
             public async Task<Agent> AddAgentAsync(Agent newAgent)
             {
-                Agent receivedAgent = new();
-                using (var httpClient = new HttpClient())
-                {
-                    StringContent content = new(JsonConvert.SerializeObject(newAgent), Encoding.UTF8, "application/json");
-
-                    using var response = await httpClient.PostAsync($"{urlService}/api/Agent", content);
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    receivedAgent = JsonConvert.DeserializeObject<Agent>(apiResponse);
-                }
-
-                return receivedAgent;
+                return await _httpRESTProvider.AddAgentAsync(urlService, newAgent);
             }
 
-            public async Task<bool> DeleteAgentAsync(string licenceNo)
+            public async Task<bool> DeleteAgentAsync(string urlService, string licenceNo)
             {
                 return await Task.Run(() =>
                 {
@@ -51,25 +41,14 @@ namespace LAF
                 });
             }
 
-            public async Task<List<Agent>> ListAgentsAsync()
+            public async Task<List<Agent>> ListAgentsAsync(string urlService)
             {
-                List<Agent> agentList = await _httpRESTProvider.ListAgentsAsync("");
-
-                return agentList;
+                return await _httpRESTProvider.ListAgentsAsync(urlService);
             }
 
-            public async Task<List<Agent>> ListAgentsAsync(string sortBy)
+            public async Task<List<Agent>> ListAgentsAsync(string urlService, string sortBy)
             {
-                List<Agent> agentList = [];
-                using (var httpClient = new HttpClient())
-                {
-                    using var response = await httpClient.GetAsync($"{urlService}/api/Agents");
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    agentList = JsonConvert.DeserializeObject<List<Agent>>(apiResponse);
-
-                }
-
-                return agentList;
+                return await _httpRESTProvider.ListAgentsAsync(urlService, sortBy);
             }
 
             public async Task<Agent> MatchAgentAsync(MatchRequest details)
@@ -144,6 +123,16 @@ namespace LAF
                 // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
                 Dispose(disposing: true);
                 GC.SuppressFinalize(this);
+            }
+
+            public Task<List<Agent>> ListAgentsAsync()
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<bool> DeleteAgentAsync(string licenceNo)
+            {
+                throw new NotImplementedException();
             }
         }
     }
