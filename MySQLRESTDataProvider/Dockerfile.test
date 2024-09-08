@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS publish
+WORKDIR /src
+
+COPY MySQLRESTDataProvider/. ./MySQLRESTDataProvider/
+COPY MySQLDatastore/. ./MySQLDatastore/
+COPY Classes/. ./Classes/
+COPY Services/. ./Services/
+COPY Middleware/. ./Middleware/
+COPY BusinessLogic/. ./BusinessLogic/
+COPY MVC/. ./MVC/
+
+WORKDIR /src/MySQLRESTDataProvider
+
+RUN dotnet restore "MySQLRESTDataProvider.csproj" --runtime linux-x64
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

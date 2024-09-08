@@ -1,0 +1,44 @@
+
+volumes:
+  agentdata:
+
+networks:
+  frontend:
+  backend:
+
+services:
+  mysql:
+    image: 'mysql:9.0.1'
+    volumes:
+      - agentdata:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysecret
+      - bind-address=0.0.0.0
+
+  mvcdata:
+    build:
+      context: .
+      dockerfile: ./MySQLRESTDataProvider/Dockerfile
+    networks:
+      - backend
+      - frontend
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
+#      - ./Certs:/https:ro
+#      - ~/.aspnet/https:/root/.aspnet/https:ro
+#      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    ports:
+      - 5148:5148
+#     - 8001:443
+    environment:
+      - DBHOST=mysql
+      - ASPNETCORE_URLS=http://+:5148
+#      - ASPNETCORE_HTTPS_PORT=8001
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MySecurePwd1@
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/exampleapp.pfx 
+    depends_on:
+      - mysql
+  

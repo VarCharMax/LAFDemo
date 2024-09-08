@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+  <AssemblyName>LAF.Models</AssemblyName>
+</PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interfaces\Services\IAgentDataProvider.cs" />
+    <Compile Remove="Interfaces\Services\IDataProviderResolverService.cs" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>
