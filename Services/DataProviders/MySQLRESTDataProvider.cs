@@ -1,9 +1,8 @@
-﻿using LAF.Models.Abstract;
-using LAF.Models.BusinessObjects;
+﻿using LAF.Models.BusinessObjects;
 using LAF.Models.Config;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
-using LAF.Services.Providers;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -11,7 +10,7 @@ namespace LAF
 {
     namespace Services.DataProviders
     {
-        public class MySQLRESTDataProvider  : DataProvider, IAgentDataProvider
+        public class MySQLRESTDataProvider  : IAgentDataProvider
         {
             private bool disposedValue;
             private readonly string serviceName = "MySQLRESTDataProvider";
@@ -19,9 +18,9 @@ namespace LAF
             private readonly string urlService = "";
             private readonly IHttpRESTProvider _httpRESTProvider;
 
-            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, DataProviderOptions config) : base(config)
+            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IOptions<DataProviderOptions> config)
             {
-                _config = config;
+                _config = config.Value;
                 urlService = _config.ServiceUrl;
                 _httpRESTProvider = restProvider;
             }

@@ -7,6 +7,7 @@ using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace LAF
@@ -16,7 +17,7 @@ namespace LAF
         public class APITests
         {
             [Fact]
-            public void APIReturnsDataAsync()
+            public async Task APIReturnsDataAsync()
             {
                 // Create mock for service dependency
                 var mockAgentService = new Mock<IAgentDataProvider>();
@@ -30,10 +31,10 @@ namespace LAF
                 string mockUrl = "127.0.0.1";
                 var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(mockUrl, new MatchRequest())).Returns(Task.FromResult(new Agent { LicenseNo = "1234", Name = "Dorian Gray" }));
 
-                // var agentResolveType = mockResolverService.Setup(p => p.GetDataProvider()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, mockOptionsService.Object));
+                var agentResolveType = mockResolverService.Setup(p => p.GetDataProvider()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, (IOptions<DataProviderOptions>)dataProviderOptions));
 
                 //This is how to mock an asynchronous method.
-                var agentType = mockAgentService.Setup(p => new MySQLRESTDataProvider(mockHttpService.Object, dataProviderOptions));
+                var agentType = mockAgentService.Setup(p => new MySQLRESTDataProvider(mockHttpService.Object, (IOptions<DataProviderOptions>)dataProviderOptions));
 
                 // mockAgentService.Object.MatchAgentAsync()
 
