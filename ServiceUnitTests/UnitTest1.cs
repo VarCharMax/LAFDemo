@@ -31,10 +31,10 @@ namespace LAF
                 string mockUrl = "127.0.0.1";
                 var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(mockUrl, new MatchRequest())).Returns(Task.FromResult(new Agent { LicenseNo = "1234", Name = "Dorian Gray" }));
 
-                var agentResolveType = mockResolverService.Setup(p => p.GetDataProvider()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, (IOptions<DataProviderOptions>)dataProviderOptions));
+                var agentResolveType = mockResolverService.Setup(p => p.GetDataProvider()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, (IOptions<MySQLRESTDataProviderOptions>)dataProviderOptions));
 
                 //This is how to mock an asynchronous method.
-                var agentType = mockAgentService.Setup(p => new MySQLRESTDataProvider(mockHttpService.Object, (IOptions<DataProviderOptions>)dataProviderOptions));
+                var agentType = mockAgentService.Setup(p => new MySQLRESTDataProvider(mockHttpService.Object, (IOptions<MySQLRESTDataProviderOptions>)dataProviderOptions));
 
                 // mockAgentService.Object.MatchAgentAsync()
 

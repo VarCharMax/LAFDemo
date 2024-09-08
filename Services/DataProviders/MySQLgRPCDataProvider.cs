@@ -7,6 +7,9 @@ namespace LAF
 {
     namespace Services.DataProviders
     {
+        public class MySQLgRPCDataProviderOptions : DataProviderOptions
+        { }
+
         public class MySQLgRPCDataProvider: IAgentDataProvider
         {
             private string urlService;
@@ -14,7 +17,7 @@ namespace LAF
             private bool disposedValue;
             private string serviceName = "MySQLgRPCDataProvider";
 
-            public MySQLgRPCDataProvider(IOptions<DataProviderOptions> config)
+            public MySQLgRPCDataProvider(IOptions<MySQLgRPCDataProviderOptions> config)
             {
                 _config = config.Value; ;
                 urlService = _config.ServiceUrl;

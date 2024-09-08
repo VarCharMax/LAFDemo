@@ -8,6 +8,9 @@ namespace LAF
 {
     namespace Services.DataProviders
     {
+        public class MongoDbRESTDataProviderOptions : DataProviderOptions
+        { }
+
         // A skeleton just to show that we can swap data services by changing the service provider.
         public class MongoDbRESTDataProvider: IAgentDataProvider
         {
@@ -15,7 +18,7 @@ namespace LAF
             private string serviceUrl;
             private string serviceName = "MongoDbRESTDataProvider";
 
-            public MongoDbRESTDataProvider(IHttpRESTProvider restProvider, IOptions<DataProviderOptions> config)
+            public MongoDbRESTDataProvider(IHttpRESTProvider restProvider, IOptions<MongoDbRESTDataProviderOptions> config)
             {
                 _config = config.Value;
                 serviceUrl = _config.ServiceUrl;

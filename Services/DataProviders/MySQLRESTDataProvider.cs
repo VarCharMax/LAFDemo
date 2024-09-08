@@ -10,6 +10,10 @@ namespace LAF
 {
     namespace Services.DataProviders
     {
+        public class MySQLRESTDataProviderOptions : DataProviderOptions
+        {
+        }
+
         public class MySQLRESTDataProvider  : IAgentDataProvider
         {
             private bool disposedValue;
@@ -18,7 +22,7 @@ namespace LAF
             private readonly string urlService = "";
             private readonly IHttpRESTProvider _httpRESTProvider;
 
-            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IOptions<DataProviderOptions> config)
+            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IOptions<MySQLRESTDataProviderOptions> config)
             {
                 _config = config.Value;
                 urlService = _config.ServiceUrl;

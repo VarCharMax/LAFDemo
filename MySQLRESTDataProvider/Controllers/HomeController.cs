@@ -59,7 +59,7 @@ namespace LAF
 
                     return Ok(agents);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return BadRequest("Error");
                 }
