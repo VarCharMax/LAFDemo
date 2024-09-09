@@ -1,14 +1,20 @@
 ﻿using LAF.Models.BusinessObjects;
 using LAF.Models.Config;
 using LAF.Services.DataProviders.Interfaces;
-using Microsoft.Extensions.Options;
 
 namespace LAF
 {
     namespace Services.DataProviders
     {
         public class MySQLgRPCDataProviderOptions : DataProviderOptions
-        { }
+        {
+            public MySQLgRPCDataProviderOptions(DataProviderOptions options)
+            {
+                this.ServiceType = options.ServiceType;
+                this.Default = options.Default;
+                this.ServiceUrl = options.ServiceUrl;
+            }
+        }
 
         public class MySQLgRPCDataProvider: IAgentDataProvider
         {
@@ -17,9 +23,9 @@ namespace LAF
             private bool disposedValue;
             private string serviceName = "MySQLgRPCDataProvider";
 
-            public MySQLgRPCDataProvider(IOptions<MySQLgRPCDataProviderOptions> config)
+            public MySQLgRPCDataProvider(MySQLgRPCDataProviderOptions config)
             {
-                _config = config.Value; ;
+                _config = config; ;
                 urlService = _config.ServiceUrl;
             }
 

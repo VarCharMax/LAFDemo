@@ -26,22 +26,80 @@ namespace LAF
             public static IServiceCollection AddDataProviderServiceConfig(
                  this IServiceCollection services, IConfiguration config)
             {
-                var configTop = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
-                var providers = configTop.GetSection(DataProvidersOptions.DataProviders).GetChildren();
+                Dictionary<string, DataProviderOptions> dataProviderOptionsDict = [];
 
+                config.GetSection(ServiceConfigurationOptions.ServiceConfiguration)
+                    .GetSection(DataProvidersOptions.DataProviders)
+                    .GetChildren()
+                    .ToList()
+                    .ForEach(g => {
+                        var opts = g.GetRequiredSection("DataProvider");
+                        DataProviderOptions pOptions = new();
+                        opts.Bind(pOptions); 
+                        dataProviderOptionsDict.Add(pOptions.ServiceType, pOptions); 
+                    });
+
+                foreach (var key in dataProviderOptionsDict.Keys)
+                {
+                    Type? t = Type.GetType($"LAF.Services.DataProviders.{dataProviderOptionsDict[key].ServiceType}Options, LAF.Services");
+
+                    if (t != null)
+                    {
+                        DataProviderOptions options = dataProviderOptionsDict[key];
+
+                        //TODO: Bind options to provider.
+
+                        var provider = Activator.CreateInstance(t, options);
+
+                        if (provider != null)
+                        {
+                            services.ConfigureOptions(provider);
+
+                            services.AddScoped(typeof(IDataProviderOptions), provider);
+                        }
+
+                        
+                    }
+                }
+
+                /*
                 //TODO: Complete auto type creation.
                 foreach (var item in providers)
                 {
                     var prov = item.GetRequiredSection("DataProvider").Get<DataProviderOptions>();
 
-                    if (prov != null)
+                    if (prov != null && prov.ServiceType != null)
                     {
+                        string opts = $"LAF.Services.DataProviders.{prov.ServiceType}Options, LAF.Services";
+                        Type? t = Type.GetType($"LAF.Services.DataProviders.{prov.ServiceType}Options, LAF.Services");
+
+                        if (t != null)
+                        {
+                            DataProviderOptions options = dataProviderOptionsDict.GetValueOrDefault(prov.ServiceType)! as DataProviderOptions;
+
+                            //TODO: Bind options to provider.
+
+                            var provider = Activator.CreateInstance(t, options);
+
+                            config.GetSection(DataProvidersOptions.DataProviders).Bind(t);
+
+                            if (provider != null)
+                            {
+                                services.ConfigureOptions(provider);
+                            }
+
+                            services.AddScoped(typeof(IDataProviderOptions), );
+                        }
+                        
+
                         // dataProviderOptionsDict.Add(prov.ServiceType, prov);
 
-                        services.Configure<MySQLRESTDataProviderOptions>(
-                            config.GetSection(DataProvidersOptions.DataProviders));
+                        // MySQLRESTDataProviderOptions
+                        // services.Configure().Add(prov);
+                        
                     }
                 }
+                */
 
                 return services;
             }
@@ -49,7 +107,6 @@ namespace LAF
             public static IServiceCollection AddDataProviderServiceGroup(
                  this IServiceCollection services, IConfiguration config)
             {
-                
                 var configTop = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
                 var providers = configTop.GetSection(DataProvidersOptions.DataProviders).GetChildren();
 
@@ -85,7 +142,7 @@ namespace LAF
                         }
                     }
                 }
-
+                
                 services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
                 services.AddScoped<IDataProviderResolverService, DataProviderResolverService>();
 

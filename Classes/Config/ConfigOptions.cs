@@ -2,6 +2,8 @@
 {
     namespace Models.Config
     {
+        public interface IDataProviderOptions;
+
         public class ServiceConfigurationOptions
         {
             public const string ServiceConfiguration = "ServiceConfiguration";
@@ -14,7 +16,7 @@
             public const string DataProviders = "DataServiceProviders";
         }
 
-        public class DataProviderOptions
+        public class DataProviderOptions: IDataProviderOptions
         {
             public const string DataProvider = "DataServiceProvider";
 

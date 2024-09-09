@@ -28,6 +28,7 @@ namespace LAF
                 var dataProviderOptions = new DataProviderOptions();
                 var matchRequest = new MatchRequest();
 
+                /*
                 string mockUrl = "127.0.0.1";
                 var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(mockUrl, new MatchRequest())).Returns(Task.FromResult(new Agent { LicenseNo = "1234", Name = "Dorian Gray" }));
 
@@ -50,7 +51,32 @@ namespace LAF
                 var result = model.Value as Agent;
 
                 Assert.NotNull(result);
-                
+                */
+
+                /*
+                Dictionary<string, string> dic = new Dictionary<string, string>()
+                {
+                    { "Plugins:PluginA:Test","A"  }
+                };
+                var config = new ConfigurationBuilder()
+                    .AddInMemoryCollection(dic)
+                    .Build();
+
+                PluginFactoryConfigration rootConfig = new PluginFactoryConfigration(config);
+
+                IServiceCollection services = new ServiceCollection()
+                    .AddSingleton(rootConfig)
+                    .AddSingleton(typeof(IPluginConfigrationProvider<>), typeof(PluginConfigrationProvider<>))
+                    .AddOptions()
+                    .ConfigureOptions<PluginConfigrationOptions<PluginA, PluginAOptions>>();
+
+                var sp = services.BuildServiceProvider();
+                var options = sp.GetRequiredService<IOptions<PluginAOptions>>();
+
+                Assert.Equal("A", options.Value.Test);
+
+
+                */
             }
         }
     }

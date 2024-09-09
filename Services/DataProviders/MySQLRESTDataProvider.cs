@@ -2,7 +2,6 @@
 using LAF.Models.Config;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -12,6 +11,12 @@ namespace LAF
     {
         public class MySQLRESTDataProviderOptions : DataProviderOptions
         {
+            public MySQLRESTDataProviderOptions(DataProviderOptions options)
+            {
+                this.ServiceType = options.ServiceType;
+                this.Default = options.Default;
+                this.ServiceUrl = options.ServiceUrl;
+            }
         }
 
         public class MySQLRESTDataProvider  : IAgentDataProvider
@@ -22,9 +27,9 @@ namespace LAF
             private readonly string urlService = "";
             private readonly IHttpRESTProvider _httpRESTProvider;
 
-            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IOptions<MySQLRESTDataProviderOptions> config)
+            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, MySQLRESTDataProviderOptions config)
             {
-                _config = config.Value;
+                _config = config;
                 urlService = _config.ServiceUrl;
                 _httpRESTProvider = restProvider;
             }
