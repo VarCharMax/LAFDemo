@@ -42,11 +42,6 @@ namespace LAF
                 throw new NotImplementedException();
             }
 
-            public Task<Agent> MatchAgentAsync(string urlService)
-            {
-                throw new NotImplementedException();
-            }
-
             public Task<Agent> UpdateAgentAsync(string urlService, Agent agent)
             {
                 throw new NotImplementedException();

@@ -8,7 +8,7 @@ namespace LAF
     {
         public class MySQLgRPCDataProviderOptions : DataProviderOptions
         {
-            public MySQLgRPCDataProviderOptions(DataProviderOptions options)
+            public MySQLgRPCDataProviderOptions(IDataProviderOptions options)
             {
                 this.ServiceType = options.ServiceType;
                 this.Default = options.Default;

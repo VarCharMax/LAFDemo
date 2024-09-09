@@ -48,9 +48,13 @@ namespace LAF
                         DataProviderOptions options = dataProviderOptionsDict[key];
 
                         var provider = Activator.CreateInstance(t, options);
-
+                        
+                        
                         if (provider != null)
                         {
+                            //Since we cannot specify generics at runtime, we cannot use the IOptions pattern.
+                            //It looks like this is the only way of registering the data options subclasses as services.
+                            //But these aren't managed services - they need to be disposed.
                             services.Add(new ServiceDescriptor(typeof(IDataProviderOptions), provider, ServiceLifetime.Scoped));
                         }
                     }

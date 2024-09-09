@@ -4,7 +4,6 @@ namespace LAF.Services.Interfaces
 {
     public interface IHttpRESTProvider: IDisposable
     {
-        public Task<Agent> MatchAgentAsync(string urlService);
         public Task<List<Agent>> ListAgentsAsync(string urlService);
         public Task<List<Agent>> ListAgentsAsync(string urlService, string sortBy);
         public Task<Agent> AddAgentAsync(string urlService, Agent newAgent);

@@ -9,7 +9,7 @@ namespace LAF
     {
         public class MongoDbRESTDataProviderOptions : DataProviderOptions
         {
-            public MongoDbRESTDataProviderOptions(DataProviderOptions options)
+            public MongoDbRESTDataProviderOptions(IDataProviderOptions options)
             {
                 this.ServiceType = options.ServiceType;
                 this.Default = options.Default;
@@ -24,9 +24,8 @@ namespace LAF
             private string serviceUrl;
             private string serviceName = "MongoDbRESTDataProvider";
 
-            public MongoDbRESTDataProvider(IHttpRESTProvider restProvider, MongoDbRESTDataProviderOptions config)
+            public MongoDbRESTDataProvider(IHttpRESTProvider restProvider, IDataProviderOptions config)
             {
-                _config = config;
                 serviceUrl = _config.ServiceUrl;
             }
 

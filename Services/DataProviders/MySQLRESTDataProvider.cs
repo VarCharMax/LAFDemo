@@ -3,6 +3,7 @@ using LAF.Models.Config;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Text;
 
 namespace LAF
@@ -11,7 +12,7 @@ namespace LAF
     {
         public class MySQLRESTDataProviderOptions : DataProviderOptions
         {
-            public MySQLRESTDataProviderOptions(DataProviderOptions options)
+            public MySQLRESTDataProviderOptions(IDataProviderOptions options)
             {
                 this.ServiceType = options.ServiceType;
                 this.Default = options.Default;
@@ -23,14 +24,13 @@ namespace LAF
         {
             private bool disposedValue;
             private readonly string serviceName = "MySQLRESTDataProvider";
-            private readonly DataProviderOptions _config;
+            // private readonly DataProviderOptions _config;
             private readonly string urlService = "";
             private readonly IHttpRESTProvider _httpRESTProvider;
 
-            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, MySQLRESTDataProviderOptions config)
+            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IDataProviderOptions config)
             {
-                _config = config;
-                urlService = _config.ServiceUrl;
+                urlService = config.ServiceUrl;
                 _httpRESTProvider = restProvider;
             }
 
@@ -61,17 +61,7 @@ namespace LAF
 
             public async Task<Agent> MatchAgentAsync(MatchRequest details)
             {
-                int id = 0;
-                Agent agent = null;
-
-                using (var httpClient = new HttpClient())
-                {
-                    using var response = await httpClient.GetAsync($"{urlService}/api/Agent{id}");
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    agent = JsonConvert.DeserializeObject<Agent>(apiResponse);
-                }
-
-                return agent;
+                return await _httpRESTProvider.MatchAgentAsync(urlService, details);
             }
 
             public async Task<Agent> MatchAgentAsync(Func<Agent, int> matchFunc, MatchRequest details)
