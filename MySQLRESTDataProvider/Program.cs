@@ -1,5 +1,5 @@
-using LAF.MySQLRESTDataProvider;
 using LAF.MySQLDatastore;
+using LAF.MySQLRESTDataProvider;
 
 var config = new ConfigurationBuilder()
     .AddCommandLine(args)

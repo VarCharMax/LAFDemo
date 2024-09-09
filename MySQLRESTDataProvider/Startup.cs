@@ -1,6 +1,6 @@
 ﻿using LAF.BusinessLogic.ExtensionMethods;
-using LAF.MySQLDatastore;
 using LAF.Models.Interfaces.Database;
+using LAF.MySQLDatastore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LAF

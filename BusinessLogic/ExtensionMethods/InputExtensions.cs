@@ -1,5 +1,4 @@
-﻿
-namespace LAF
+﻿namespace LAF
 {
     namespace BusinessLogic.ExtensionMethods
     {
