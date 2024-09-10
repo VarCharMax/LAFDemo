@@ -54,7 +54,7 @@ namespace LAF
                             //But these aren't managed services - they need to be disposed.
                             services.Add(new ServiceDescriptor(typeof(IAgentDataProvider), provider, ServiceLifetime.Scoped));
 
-                            //Or ...
+                            //Or ... (only use one!)
                             services.AddScoped<IAgentDataProvider>(implementationFactory: sProvider => { return provider; });
                         }
                     }

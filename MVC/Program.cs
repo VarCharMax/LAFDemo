@@ -8,6 +8,7 @@ using LAF.Services.Middleware;
  * Config
  */
 var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false)
     .AddCommandLine(args)
     .AddEnvironmentVariables()
     .Build();
@@ -17,8 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // ToDo: Should this be done after injecting the service? Can you do this both ways?
-builder.Services.AddSingleton<IConfiguration>(config);
+// builder.Services.AddSingleton<IConfiguration>(config);
 
+//Probably don't need both calls since they repeat config parsing.
 builder.Services
     .AddDataProviderServiceConfig(builder.Configuration)
     .AddDataProviderServiceGroup(builder.Configuration);
@@ -33,6 +35,7 @@ builder.Services.AddScoped<IAgentMatchLogProvider, AgentMatchLogProvider>();
  * Runtime environment.
  */
 builder.WebHost
+    .UseConfiguration(config)
     .UseKestrel()
     .UseContentRoot(Directory.GetCurrentDirectory());
 
@@ -54,7 +57,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 app.UseStatusCodePages();
-
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
