@@ -2,7 +2,6 @@
 using LAF.Middleware;
 using LAF.Models.Config;
 using LAF.Models.Interfaces.Services;
-using LAF.Services.DataProviders;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using LAF.Services.Providers;
@@ -28,19 +27,6 @@ namespace LAF
                  this IServiceCollection services, IConfiguration config)
             {
                 Dictionary<string, DataProviderOptions> dataProviderOptionsDict = config.GetDataProviderServiceOptions();
-
-                /*
-                config.GetSection(ServiceConfigurationOptions.ServiceConfiguration)
-                    .GetSection(DataProvidersOptions.DataProviders)
-                    .GetChildren()
-                    .ToList()
-                    .ForEach(g => {
-                        var opts = g.GetRequiredSection("DataProvider");
-                        DataProviderOptions pOptions = new();
-                        opts.Bind(pOptions); 
-                        dataProviderOptionsDict.Add(pOptions.ServiceType, pOptions); 
-                    });
-                */
 
                 //Add DataProviderOptions to ServiceProvider for each registered dataProvider type.
                 foreach (var key in dataProviderOptionsDict.Keys)
@@ -72,19 +58,6 @@ namespace LAF
             {
                 Dictionary<string, DataProviderOptions> dataProviderOptionsDict = config.GetDataProviderServiceOptions();
 
-                /*
-                config.GetSection(ServiceConfigurationOptions.ServiceConfiguration)
-                   .GetSection(DataProvidersOptions.DataProviders)
-                   .GetChildren()
-                   .ToList()
-                   .ForEach(g => {
-                       var opts = g.GetRequiredSection("DataProvider");
-                       DataProviderOptions pOptions = new();
-                       opts.Bind(pOptions);
-                       dataProviderOptionsDict.Add(pOptions.ServiceType, pOptions);
-                   });
-                */
-
                 //List of names of all registered Data Providers.
                 var serviceConfigNames = dataProviderOptionsDict.Select(s => s.Key).ToList();
 
@@ -93,18 +66,16 @@ namespace LAF
                     .GetExportedTypes()
                     .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
 
-                //TODO: Try this implementation.
+                //Register DataProvider implementations.
                 foreach (var type in typeof(IAgentDataProvider).Assembly!.GetTypesAssignableFrom<IAgentDataProvider>())
                 {
                     if (serviceConfigNames.Contains(type.Name))
                     {
-                        //TODO: Do we need different interfaces for specific services?
-                        //You can register multiple implemntations. There is a ServiceResolver class, but not sure
-                        ////if I can use it if it needs generics specified.
                         services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
                     }
                 }
 
+                /*
                 //Delete this if not needed.
                 if (assemName != null)
                 {
@@ -113,14 +84,12 @@ namespace LAF
                     {
                         if (serviceConfigNames.Contains(type.Name))
                         {
-                            //TODO: Do we need different interfaces for specific services?
-                            //You can register multiple implemntations. There is a ServiceResolver class, but not sure
-                            ////if I can use it if it needs generics specified.
                             services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
                         }
                     }
                 }
-                
+                */
+
                 services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
                 services.AddScoped<IDataProviderResolverService, DataServiceResolver>();
 
