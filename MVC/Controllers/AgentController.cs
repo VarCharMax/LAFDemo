@@ -15,7 +15,7 @@ namespace LAF
             {
                 if (dataProviderService != null)
                 {
-                    dataService = dataProviderService.GetDataProvider();
+                    dataService = dataProviderService.GetProviderService();
                 }
                 else
                 {

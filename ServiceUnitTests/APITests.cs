@@ -71,7 +71,7 @@ namespace LAF
 
                 //This is how to mock an asynchronous method.
                 var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(mockUrl, matchRequest)).Returns(Task.FromResult(agentTest));
-                var agentResolveType = mockResolverService.Setup(p => p.GetDataProvider()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, dataOptions));
+                var agentResolveType = mockResolverService.Setup(p => p.GetProviderService()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, dataOptions));
 
                 //Testing AgentController/MatchAgent/5 endpoint.
                 var controller = new AgentController(mockResolverService.Object);

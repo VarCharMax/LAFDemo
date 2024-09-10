@@ -1,4 +1,5 @@
-﻿using LAF.Middleware;
+﻿using LAF.BusinessLogic.ServiceResolver;
+using LAF.Middleware;
 using LAF.Models.Config;
 using LAF.Models.Interfaces.Services;
 using LAF.Services.DataProviders;
@@ -26,8 +27,9 @@ namespace LAF
             public static IServiceCollection AddDataProviderServiceConfig(
                  this IServiceCollection services, IConfiguration config)
             {
-                Dictionary<string, DataProviderOptions> dataProviderOptionsDict = [];
+                Dictionary<string, DataProviderOptions> dataProviderOptionsDict = config.GetDataProviderServiceOptions();
 
+                /*
                 config.GetSection(ServiceConfigurationOptions.ServiceConfiguration)
                     .GetSection(DataProvidersOptions.DataProviders)
                     .GetChildren()
@@ -38,6 +40,7 @@ namespace LAF
                         opts.Bind(pOptions); 
                         dataProviderOptionsDict.Add(pOptions.ServiceType, pOptions); 
                     });
+                */
 
                 //Add DataProviderOptions to ServiceProvider for each registered dataProvider type.
                 foreach (var key in dataProviderOptionsDict.Keys)
@@ -67,8 +70,9 @@ namespace LAF
             public static IServiceCollection AddDataProviderServiceGroup(
                  this IServiceCollection services, IConfiguration config)
             {
-                Dictionary<string, DataProviderOptions> dataProviderOptionsDict = [];
+                Dictionary<string, DataProviderOptions> dataProviderOptionsDict = config.GetDataProviderServiceOptions();
 
+                /*
                 config.GetSection(ServiceConfigurationOptions.ServiceConfiguration)
                    .GetSection(DataProvidersOptions.DataProviders)
                    .GetChildren()
@@ -79,7 +83,8 @@ namespace LAF
                        opts.Bind(pOptions);
                        dataProviderOptionsDict.Add(pOptions.ServiceType, pOptions);
                    });
-                 
+                */
+
                 //List of names of all registered Data Providers.
                 var serviceConfigNames = dataProviderOptionsDict.Select(s => s.Key).ToList();
 
@@ -87,7 +92,20 @@ namespace LAF
                 var assemName = typeof(IAgentDataProvider).Assembly
                     .GetExportedTypes()
                     .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
-                
+
+                //TODO: Try this implementation.
+                foreach (var type in typeof(IAgentDataProvider).Assembly!.GetTypesAssignableFrom<IAgentDataProvider>())
+                {
+                    if (serviceConfigNames.Contains(type.Name))
+                    {
+                        //TODO: Do we need different interfaces for specific services?
+                        //You can register multiple implemntations. There is a ServiceResolver class, but not sure
+                        ////if I can use it if it needs generics specified.
+                        services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
+                    }
+                }
+
+                //Delete this if not needed.
                 if (assemName != null)
                 {
                     // Register as services all types that implement IAgentDataProvider interface
@@ -95,41 +113,19 @@ namespace LAF
                     {
                         if (serviceConfigNames.Contains(type.Name))
                         {
-                            services.AddScoped(typeof(IAgentDataProvider), type);
+                            //TODO: Do we need different interfaces for specific services?
+                            //You can register multiple implemntations. There is a ServiceResolver class, but not sure
+                            ////if I can use it if it needs generics specified.
+                            services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
                         }
                     }
                 }
                 
                 services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
-                services.AddScoped<IDataProviderResolverService, DataProviderResolverService>();
+                services.AddScoped<IDataProviderResolverService, DataServiceResolver>();
 
                 return services;
             }
-            
-            
-            public static IAgentDataProvider? ResolveDataProviderService(
-                this WebApplication app)
-            {
-                IAgentDataProvider? service;
-                IConfiguration config = app.Configuration;
-
-                List<DataProviderOptions> providersOptions = [];
-
-                var configTop = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
-                configTop.GetSection(DataProvidersOptions.DataProviders)
-                    .GetChildren()
-                    .ToList()
-                    .ForEach(s => { providersOptions.Add(s.GetRequiredSection("DataProvider").Get<DataProviderOptions>()!); });
-
-                string serviceName = providersOptions.Where(p => p.Default == true).First().ServiceType;
-                
-                using var scope = app.Services.CreateScope();
-                var services = scope.ServiceProvider;
-                service = services.GetKeyedService<IAgentDataProvider>(serviceName);
-
-                return service;
-            }
-            
         }
     }
 }

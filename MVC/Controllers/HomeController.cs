@@ -13,7 +13,7 @@ namespace LAF
             public HomeController(IDataProviderResolverService dataProviderService) {
                 if (dataProviderService != null)
                 {
-                    dataService = dataProviderService.GetDataProvider();
+                    dataService = dataProviderService.GetProviderService();
                 }
                 else
                 {

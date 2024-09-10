@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LAF
 {
+    /*
     namespace Services.DataProviders
     {
         // Not async because nothing it calls is async.
@@ -30,13 +31,7 @@ namespace LAF
                 var configTop = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
                 var providers = configTop.GetSection(DataProvidersOptions.DataProviders).GetChildren();
 
-                /*
-                var configTop = config.GetSection(ServiceConfigurationOptions.ServiceConfiguration);
-                configTop.GetSection(DataProvidersOptions.DataProviders)
-                    .GetChildren()
-                    .ToList()
-                    .ForEach(s => { providersOptions.Add(s.GetRequiredSection("DataProvider").Get<DataProviderOptions>()!); });
-                */
+                
 
                 string serviceName = providersOptions.Where(p => p.Default == true).First().ServiceType;
 
@@ -75,4 +70,5 @@ namespace LAF
             }
         }
     }
+    */
 }

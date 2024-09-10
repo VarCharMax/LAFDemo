@@ -4,9 +4,9 @@ namespace LAF
 {
     namespace Models.Interfaces.Services
     {
-        public interface IDataProviderResolverService : IDisposable
+        public interface IDataProviderResolverService
         {
-            public IAgentDataProvider GetDataProvider();
+            public IAgentDataProvider GetProviderService();
         }
     }
 }

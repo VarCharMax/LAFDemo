@@ -24,7 +24,6 @@ builder.Services.AddControllersWithViews();
 builder.Services
     .AddDataProviderServiceConfig(builder.Configuration)
     .AddDataProviderServiceGroup(builder.Configuration);
-
 builder.Services.AddScoped<IAgentMatchLogProvider, AgentMatchLogProvider>();
 
 // builder.Services.AddAuthorization();
