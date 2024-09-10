@@ -13,8 +13,6 @@ namespace LAF
 
             public AgentController(IDataProviderResolverService dataProviderService)
             {
-                // var service = app.ResolveDataProviderService();
-
                 if (dataProviderService != null)
                 {
                     dataService = dataProviderService.GetDataProvider();
