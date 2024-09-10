@@ -16,15 +16,48 @@ namespace LAF
             [Fact]
             public async Task APIReturnsDataAsync()
             {
+                string jsonConfig=@"{
+                        ""ServiceConfiguration"": {
+                            ""MatchMinimumValue"": 5,
+                            ""DataServiceProviders"": [
+                            {
+                                ""DataProvider"": {
+                                     ""ServiceType"": ""MySQLRESTDataProvider"",
+                                     ""ServiceUrl"": ""127.0.0.1:5148"",
+                                     ""Default"": true
+                                }
+                            },
+                            {
+                                ""DataProvider"": {
+                                ""ServiceType"": ""MySQLgRPCDataProvider"",
+                                ""ServiceUrl"": ""127.0.0.1:3765"",
+                                ""Default"": false
+                                }
+                            },
+                            {
+                                ""DataProvider"": {
+                                ""ServiceType"": ""MongoDbRESTDataProvider"",
+                                ""ServiceUrl"": ""127.0.0.1:5436"",
+                                ""Default"": false
+                            }
+                        }
+                    ]
+                }
+            }";
+
                 /*
                 TODO: Could use real service provider with resolver service rather than mock.
                 But would need to mock Config service since the resolver uses it.
-                
+
+                MySQLRESTDataProvider
+
                 Mocking service provider - 
                 IServiceCollection services = new ServiceCollection()
-                    // .AddSingleton(rootConfig)
-                    .AddScoped<IHttpRESTProvider, HttpRESTProvider>()
-                    .AddScoped<IAgentDataProvider, MySQLRESTDataProvider>();
+                    .AddSingleton(rootConfig)
+                    .AddScoped<IHttpRESTProvider, mockHttpService.Object>()
+                    .AddScoped<IDataProviderResolverService, MySQLRESTDataProvider>();
+
+                services.Add(new ServiceDescriptor(typeof(IAgentDataProvider), provider, ServiceLifetime.Scoped));
 
                 var sp = services.BuildServiceProvider();
                 */
