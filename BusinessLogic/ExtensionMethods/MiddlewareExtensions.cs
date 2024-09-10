@@ -39,6 +39,7 @@ namespace LAF
                         dataProviderOptionsDict.Add(pOptions.ServiceType, pOptions); 
                     });
 
+                //Add DataProviderOptions to ServiceProvider for each registered dataProvider type.
                 foreach (var key in dataProviderOptionsDict.Keys)
                 {
                     Type? t = Type.GetType($"LAF.Services.DataProviders.{dataProviderOptionsDict[key].ServiceType}Options, LAF.Services");
@@ -47,15 +48,15 @@ namespace LAF
                     {
                         DataProviderOptions options = dataProviderOptionsDict[key];
 
-                        if (Activator.CreateInstance(t, options) is IAgentDataProvider provider)
+                        if (Activator.CreateInstance(t, options) is IDataProviderOptions provider)
                         {
                             //Since we cannot specify generics at runtime, we cannot use the IOptions pattern.
                             //It looks like this is the only way of registering the data options subclasses as services.
                             //But these aren't managed services - they need to be disposed.
-                            services.Add(new ServiceDescriptor(typeof(IAgentDataProvider), provider, ServiceLifetime.Scoped));
+                            // services.Add(new ServiceDescriptor(typeof(IAgentDataProvider), provider, ServiceLifetime.Scoped));
 
                             //Or ... (only use one!)
-                            services.AddScoped<IAgentDataProvider>(implementationFactory: sProvider => { return provider; });
+                            services.AddScoped<IDataProviderOptions>(implementationFactory: sProvider => { return provider; });
                         }
                     }
                 }
