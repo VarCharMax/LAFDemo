@@ -48,6 +48,11 @@ namespace LAF
             [Fact]
             public async Task ServiceReturnsDataAsync()
             {
+                /*
+                 * Test using minimal mocks.
+                 * All services are real except for HttpProvider.
+                 */
+
                 var agentTest = new Agent { LicenseNo = "1234", Name = "Dorian Gray" };
                 var mockHttpService = new Mock<IHttpRESTProvider>();
                 var matchRequest = new MatchRequest { SizePreference = 6, AttributePreference = "localknowledge" };
