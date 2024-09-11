@@ -12,6 +12,9 @@ namespace LAF.BusinessLogic.ServiceResolver
         {
             IAgentDataProvider? service;
 
+            //This resolver uses the appsettings file, but the idea is that there could be a more sophisticated implementation based on a database
+            //or some other instrumentation, so the service could fall back to an alternative if the preferred one degrades, etc.
+
             var serviceList = config.GetDataProviderServiceOptions().Select(s => s.Value).ToList();
 
             string serviceName = serviceList.Where(p => p.Default == true).First().ServiceType;

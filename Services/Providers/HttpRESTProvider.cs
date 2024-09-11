@@ -2,6 +2,7 @@
 using LAF.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LAF
 {
@@ -42,9 +43,20 @@ namespace LAF
                 throw new NotImplementedException();
             }
 
-            public Task<Agent> UpdateAgentAsync(string urlService, Agent agent)
+            public async Task<Agent> UpdateAgentAsync(string urlService, Agent agent)
             {
-                throw new NotImplementedException();
+                Agent receivedAgent;
+
+                using (var httpClient = new HttpClient())
+                {
+                    StringContent content = new(JsonConvert.SerializeObject(agent), Encoding.UTF8, "application/json");
+
+                    using var response = await httpClient.PatchAsync($"{urlService}/api/Agent", content);
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    receivedAgent = JsonConvert.DeserializeObject<Agent>(apiResponse);
+                }
+
+                return receivedAgent;
             }
 
             public Task<bool> DeleteAgentAsync(string urlService, string licenceNo)

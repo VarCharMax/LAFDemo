@@ -2,8 +2,6 @@
 using LAF.Services.Classes;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace LAF
 {
@@ -75,32 +73,12 @@ namespace LAF
 
             public async Task<Agent> MatchAgentAsync(Func<Agent, int> matchFunc, MatchRequest details)
             {
-                int id = 0;
-                Agent agent = null;
-
-                using (var httpClient = new HttpClient())
-                {
-                    using var response = await httpClient.GetAsync($"{urlService}/api/Agent{id}");
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    agent = JsonConvert.DeserializeObject<Agent>(apiResponse);
-                }
-
-                return agent;
+                return await _httpRESTProvider.MatchAgentAsync(urlService, details);
             }
 
             public async Task<Agent> UpdateAgentAsync(Agent agent)
             {
-                Agent receivedAgent = new();
-                using (var httpClient = new HttpClient())
-                {
-                    StringContent content = new(JsonConvert.SerializeObject(agent), Encoding.UTF8, "application/json");
-
-                    using var response = await httpClient.PatchAsync($"{urlService}/api/Agent", content);
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    receivedAgent = JsonConvert.DeserializeObject<Agent>(apiResponse);
-                }
-
-                return receivedAgent;
+                return await _httpRESTProvider.UpdateAgentAsync(urlService, agent);
             }
 
             protected virtual void Dispose(bool disposing)
