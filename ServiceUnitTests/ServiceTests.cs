@@ -28,8 +28,8 @@ namespace LAF
                 var matchRequest = new MatchRequest { SizePreference = 6, AttributePreference = "localknowledge" };
 
                 //This is how to mock an asynchronous method.
-                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(It.IsAny<string>(), It.IsAny<MatchRequest>())).Returns(Task.FromResult(agentTest));
                 var agentResolveType = mockResolverService.Setup(p => p.GetProviderService(It.IsAny<string>())).Returns(new MySQLRESTDataProvider(mockHttpService.Object, dataOptions));
+                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(It.IsAny<string>(), It.IsAny<MatchRequest>())).Returns(Task.FromResult(agentTest));
 
                 //Testing AgentController/MatchAgent/5 endpoint.
                 var controller = new AgentController(mockResolverService.Object);
