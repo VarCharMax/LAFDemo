@@ -1,3 +1,4 @@
+using LAF.BusinessLogic.ExtensionMethods;
 using LAF.BusinessLogic.ServiceResolver;
 using LAF.Models.BusinessObjects;
 using LAF.Models.Interfaces.Services;
@@ -6,6 +7,7 @@ using LAF.Services.Classes;
 using LAF.Services.DataProviders;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,10 +27,9 @@ namespace LAF
                 var mockResolverService = new Mock<IDataProviderResolverService>();
                 var dataOptions = new MySQLRESTDataProviderOptions(new DataProviderOptions() { Default = true, ServiceType = "MySQLRESTDataProvider", ServiceUrl = "127.0.0.1" }); 
                 var matchRequest = new MatchRequest { SizePreference = 6, AttributePreference = "localknowledge" };
-                string mockUrl = "127.0.0.1";
 
                 //This is how to mock an asynchronous method.
-                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(mockUrl, matchRequest)).Returns(Task.FromResult(agentTest));
+                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(It.IsAny<string>(), It.IsAny<MatchRequest>())).Returns(Task.FromResult(agentTest));
                 var agentResolveType = mockResolverService.Setup(p => p.GetProviderService()).Returns(new MySQLRESTDataProvider(mockHttpService.Object, dataOptions));
 
                 //Testing AgentController/MatchAgent/5 endpoint.
@@ -49,8 +50,9 @@ namespace LAF
             public async Task ServicesReturnDataAsync()
             {
                 /*
-                 * Testing all data services using minimal mocks.
+                 * Testing all data services in combination using minimal mocks.
                  * All services are real except for HttpProvider.
+                 * But we aren't loading all Data Provider services and options classes ... Try doing this.
                  * Should probably be called after all services have been individually tested, to show that they all work together.
                  */
 
@@ -59,18 +61,20 @@ namespace LAF
                 var matchRequest = new MatchRequest { SizePreference = 6, AttributePreference = "localknowledge" };
                 string mockUrl = "127.0.0.1";
 
-                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(mockUrl, matchRequest)).Returns(Task.FromResult(agentTest));
+                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(It.IsAny<string>(), It.IsAny<MatchRequest>())).Returns(Task.FromResult(agentTest));
 
                 var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false)
                     .Build();
 
+                var builder = WebApplication.CreateBuilder();
+
                 IServiceCollection services = new ServiceCollection()
                     .AddSingleton<IConfiguration>(config)
                     .AddScoped(provider => mockHttpService.Object)
-                    .AddKeyedScoped<IAgentDataProvider, MySQLRESTDataProvider>("MySQLRESTDataProvider")
-                    .AddScoped<IDataProviderResolverService, DataServiceResolver>()
-                    .AddScoped<IMySQLRESTDataProviderOptions>(provider => new MySQLRESTDataProviderOptions(new DataProviderOptions { Default = true, ServiceType = "MySQLRESTDataProvider", ServiceUrl = mockUrl }));
+                    .AddDataProviderServiceConfig(builder.Configuration)
+                    .AddDataProviderServiceGroup(builder.Configuration)
+                    .AddScoped<IDataProviderResolverService, DataServiceResolver>();
 
                 var sp = services.BuildServiceProvider();
 
