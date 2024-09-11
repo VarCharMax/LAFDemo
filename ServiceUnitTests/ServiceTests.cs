@@ -18,7 +18,7 @@ namespace LAF
         public class ServiceTests
         {
             [Fact]
-            public async Task APIReturnsDataAsync()
+            public async Task MySQLRESTDataProviderReturnsDataAsync()
             {
                 var agentTest = new Agent { LicenseNo = "1234", Name = "Dorian Gray" };
                 var mockHttpService = new Mock<IHttpRESTProvider>();
@@ -46,11 +46,12 @@ namespace LAF
             }
 
             [Fact]
-            public async Task ServiceReturnsDataAsync()
+            public async Task ServicesReturnDataAsync()
             {
                 /*
                  * Test using minimal mocks.
                  * All services are real except for HttpProvider.
+                 * Should probably be called after all services have been individually tested, to show that they all work together.
                  */
 
                 var agentTest = new Agent { LicenseNo = "1234", Name = "Dorian Gray" };
