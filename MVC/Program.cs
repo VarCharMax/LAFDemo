@@ -1,6 +1,9 @@
 using LAF.BusinessLogic.ExtensionMethods;
+using LAF.BusinessLogic.ServiceResolver;
 using LAF.Models.Interfaces.Services;
+using LAF.Services.Interfaces;
 using LAF.Services.Middleware;
+using LAF.Services.Providers;
 
 //Using the new minimal config approach.
 
@@ -19,10 +22,11 @@ builder.Services.AddControllersWithViews();
 
 // ToDo: Should this be done after injecting the service? Can you do this both ways? Do we need this?
 builder.Services.AddSingleton<IConfiguration>(config);
-
 builder.Services
     .AddDataProviderServiceConfig(builder.Configuration)
     .AddDataProviderServiceGroup(builder.Configuration);
+builder.Services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
+builder.Services.AddScoped<IDataProviderResolverService, DataServiceResolver>();
 builder.Services.AddScoped<IAgentMatchLogProvider, AgentMatchLogProvider>();
 
 // builder.Services.AddAuthorization();

@@ -102,9 +102,6 @@ namespace LAF
                 }
                 */
 
-                services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
-                services.AddScoped<IDataProviderResolverService, DataServiceResolver>();
-
                 return services;
             }
         }
