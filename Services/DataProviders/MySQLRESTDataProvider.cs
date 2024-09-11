@@ -28,18 +28,12 @@ namespace LAF
             }
         }
 
-        public class MySQLRESTDataProvider  : IAgentDataProvider
+        public class MySQLRESTDataProvider(IHttpRESTProvider restProvider, IMySQLRESTDataProviderOptions config) : IAgentDataProvider
         {
             private bool disposedValue;
             private readonly string serviceName = "MySQLRESTDataProvider";
-            private readonly string urlService = "";
-            private readonly IHttpRESTProvider _httpRESTProvider;
-
-            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IMySQLRESTDataProviderOptions config)
-            {
-                urlService = config.ServiceUrl;
-                _httpRESTProvider = restProvider;
-            }
+            private readonly string urlService = config.ServiceUrl;
+            private readonly IHttpRESTProvider _httpRESTProvider = restProvider;
 
             public string ServiceName { get => serviceName; }
 

@@ -12,8 +12,6 @@ namespace LAF
             {
                 return await Task.Run(() =>
                 {
-                    string d = "";
-
                     return true;
                 });
             }

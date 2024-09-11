@@ -5,14 +5,9 @@ namespace LAF
 {
     namespace Middleware
     {
-        public class RequestAgentMatchMiddleware
+        public class RequestAgentMatchMiddleware(RequestDelegate next)
         {
-            private readonly RequestDelegate nextDelegate;
-
-            public RequestAgentMatchMiddleware(RequestDelegate next)
-            {
-                nextDelegate = next;
-            }
+            private readonly RequestDelegate nextDelegate = next;
 
             public async Task InvokeAsync(HttpContext context, IAgentMatchLogProvider logger)
             {

@@ -27,17 +27,12 @@ namespace LAF
             }
         }
 
-        public class MySQLgRPCDataProvider: IAgentDataProvider
+        public class MySQLgRPCDataProvider(IMySQLgRPCDataProviderOptions config) : IAgentDataProvider
         {
-            private string urlService;
+            private string urlService = config.ServiceUrl;
             private MySQLgRPCDataProviderOptions _config;
             private bool disposedValue;
-            private string serviceName = "MySQLgRPCDataProvider";
-
-            public MySQLgRPCDataProvider(IMySQLgRPCDataProviderOptions config)
-            {
-                urlService = config.ServiceUrl;
-            }
+            private readonly string serviceName = "MySQLgRPCDataProvider";
 
             string IAgentDataProvider.ServiceName { get => serviceName; }
 

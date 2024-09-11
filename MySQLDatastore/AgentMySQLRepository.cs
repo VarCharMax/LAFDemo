@@ -6,15 +6,10 @@ namespace LAF
 {
     namespace MySQLDatastore
     {
-        public class AgentMySQLRepository : IAgentRepository, IDisposable
+        public class AgentMySQLRepository(MySQLDbContext ctx) : IAgentRepository, IDisposable
         {
-            private readonly MySQLDbContext context;
+            private readonly MySQLDbContext context = ctx;
             private bool disposedValue;
-
-            public AgentMySQLRepository(MySQLDbContext ctx)
-            {
-                context = ctx;
-            }
 
             public async Task<bool> AddAgentAsync(Models.BusinessObjects.Agent agent)
             {
