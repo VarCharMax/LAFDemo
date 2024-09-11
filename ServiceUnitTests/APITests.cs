@@ -2,6 +2,7 @@ using LAF.Models.BusinessObjects;
 using LAF.Models.Config;
 using LAF.Models.Interfaces.Services;
 using LAF.MVC.Controllers;
+using LAF.Services.Classes;
 using LAF.Services.DataProviders;
 using LAF.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

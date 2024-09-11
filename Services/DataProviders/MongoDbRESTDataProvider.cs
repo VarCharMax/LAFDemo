@@ -1,5 +1,5 @@
 ﻿using LAF.Models.BusinessObjects;
-using LAF.Models.Config;
+using LAF.Services.Classes;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 
@@ -7,13 +7,24 @@ namespace LAF
 {
     namespace Services.DataProviders
     {
-        public class MongoDbRESTDataProviderOptions : DataProviderOptions
+        public interface IMongoDbRESTDataProviderOptions : IDataProviderOptions;
+
+        public class MongoDbRESTDataProviderOptions : IMongoDbRESTDataProviderOptions
         {
             public MongoDbRESTDataProviderOptions(DataProviderOptions options)
             {
                 this.ServiceType = options.ServiceType;
                 this.Default = options.Default;
                 this.ServiceUrl = options.ServiceUrl;
+            }
+
+            public string ServiceType { get; set; }
+            public string ServiceUrl { get; set; }
+            public bool Default { get; set; }
+
+            public void Dispose()
+            {
+                
             }
         }
 
@@ -24,7 +35,7 @@ namespace LAF
             private string serviceUrl;
             private string serviceName = "MongoDbRESTDataProvider";
 
-            public MongoDbRESTDataProvider(IHttpRESTProvider restProvider, DataProviderOptions options)
+            public MongoDbRESTDataProvider(IHttpRESTProvider restProvider, IMongoDbRESTDataProviderOptions options)
             {
                 serviceUrl = options.ServiceUrl;
             }

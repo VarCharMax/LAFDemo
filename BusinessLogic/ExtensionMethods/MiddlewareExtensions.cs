@@ -1,7 +1,7 @@
 ﻿using LAF.BusinessLogic.ServiceResolver;
 using LAF.Middleware;
-using LAF.Models.Config;
 using LAF.Models.Interfaces.Services;
+using LAF.Services.Classes;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using LAF.Services.Providers;
@@ -27,25 +27,29 @@ namespace LAF
                  this IServiceCollection services, IConfiguration config)
             {
                 Dictionary<string, DataProviderOptions> dataProviderOptionsDict = config.GetDataProviderServiceOptions();
-
+                
                 //Add DataProviderOptions to ServiceProvider for each registered dataProvider type.
                 foreach (var key in dataProviderOptionsDict.Keys)
                 {
-                    Type? t = Type.GetType($"LAF.Services.DataProviders.{dataProviderOptionsDict[key].ServiceType}Options, LAF.Services");
+                    Type? tServiceName = Type.GetType($"LAF.Services.DataProviders.{dataProviderOptionsDict[key].ServiceType}Options, LAF.Services");
 
-                    if (t != null)
+                    if (tServiceName != null)
                     {
+                        Type? tInterface = tServiceName.GetInterface($"LAF.Services.DataProviders.I{dataProviderOptionsDict[key].ServiceType}Options");
+
                         DataProviderOptions options = dataProviderOptionsDict[key];
 
-                        if (Activator.CreateInstance(t, options) is IDataProviderOptions provider)
+                        var provider = Activator.CreateInstance(tServiceName, options);
+
+                        if (provider != null)
                         {
                             //Since we cannot specify generics at runtime, we cannot use the IOptions pattern.
                             //It looks like this is the only way of registering the data options subclasses as services.
                             //But these aren't managed services - they need to be disposed.
-                            // services.Add(new ServiceDescriptor(typeof(IAgentDataProvider), provider, ServiceLifetime.Scoped));
+                            // services.Add(new ServiceDescriptor(typeof(IDataProviderOptions), tServiceName, ServiceLifetime.Scoped));
 
                             //Or ... (only use one!)
-                            services.AddScoped<IDataProviderOptions>(implementationFactory: sProvider => { return provider; });
+                            services.AddScoped(tInterface!, implementationFactory: sProvider => { return provider; });
                         }
                     }
                 }
@@ -66,6 +70,7 @@ namespace LAF
                     .GetExportedTypes()
                     .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
 
+                /*
                 //Register DataProvider implementations.
                 foreach (var type in typeof(IAgentDataProvider).Assembly!.GetTypesAssignableFrom<IAgentDataProvider>())
                 {
@@ -74,8 +79,8 @@ namespace LAF
                         services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
                     }
                 }
-
-                /*
+                */
+                
                 //Delete this if not needed.
                 if (assemName != null)
                 {
@@ -88,7 +93,7 @@ namespace LAF
                         }
                     }
                 }
-                */
+                
 
                 services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
                 services.AddScoped<IDataProviderResolverService, DataServiceResolver>();

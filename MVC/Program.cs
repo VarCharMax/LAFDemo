@@ -18,9 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // ToDo: Should this be done after injecting the service? Can you do this both ways? Do we need this?
-// builder.Services.AddSingleton<IConfiguration>(config);
+builder.Services.AddSingleton<IConfiguration>(config);
 
-//Probably don't need both calls since they repeat config parsing.
 builder.Services
     .AddDataProviderServiceConfig(builder.Configuration)
     .AddDataProviderServiceGroup(builder.Configuration);

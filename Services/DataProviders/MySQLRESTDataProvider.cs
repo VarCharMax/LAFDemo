@@ -1,22 +1,33 @@
 ﻿using LAF.Models.BusinessObjects;
 using LAF.Models.Config;
+using LAF.Services.Classes;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using Newtonsoft.Json;
-using System.Globalization;
 using System.Text;
 
 namespace LAF
 {
     namespace Services.DataProviders
     {
-        public class MySQLRESTDataProviderOptions : DataProviderOptions
+        public interface IMySQLRESTDataProviderOptions : IDataProviderOptions;
+
+        public class MySQLRESTDataProviderOptions : IMySQLRESTDataProviderOptions
         {
-            public MySQLRESTDataProviderOptions(IDataProviderOptions options)
+            public MySQLRESTDataProviderOptions(DataProviderOptions options)
             {
                 this.ServiceType = options.ServiceType;
                 this.Default = options.Default;
                 this.ServiceUrl = options.ServiceUrl;
+            }
+
+            public string ServiceType { get; set; }
+            public string ServiceUrl { get; set; }
+            public bool Default { get; set; }
+
+            public void Dispose()
+            {
+                
             }
         }
 
@@ -24,11 +35,10 @@ namespace LAF
         {
             private bool disposedValue;
             private readonly string serviceName = "MySQLRESTDataProvider";
-            // private readonly DataProviderOptions _config;
             private readonly string urlService = "";
             private readonly IHttpRESTProvider _httpRESTProvider;
 
-            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IDataProviderOptions config)
+            public MySQLRESTDataProvider(IHttpRESTProvider restProvider, IMySQLRESTDataProviderOptions config)
             {
                 urlService = config.ServiceUrl;
                 _httpRESTProvider = restProvider;

@@ -4,6 +4,17 @@ namespace LAF
 {
     namespace Services.DataProviders.Interfaces
     {
+        public interface IDataProviderOptions : IDisposable
+        {
+            public const string DataProvider = "DataServiceProvider";
+
+            public string ServiceType { get; set; }
+
+            public string ServiceUrl { get; set; }
+
+            public bool Default { get; set; }
+        }
+
         public interface IAgentDataProvider: IDisposable
         {
             public string ServiceName { get; }
