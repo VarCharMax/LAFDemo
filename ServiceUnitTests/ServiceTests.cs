@@ -5,7 +5,6 @@ using LAF.Models.Interfaces.Services;
 using LAF.MVC.Controllers;
 using LAF.Services.Classes;
 using LAF.Services.DataProviders;
-using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -52,14 +51,12 @@ namespace LAF
                 /*
                  * Testing all data services in combination using minimal mocks.
                  * All services are real except for HttpProvider.
-                 * But we aren't loading all Data Provider services and options classes ... Try doing this.
                  * Should probably be called after all services have been individually tested, to show that they all work together.
                  */
 
                 var agentTest = new Agent { LicenseNo = "1234", Name = "Dorian Gray" };
                 var mockHttpService = new Mock<IHttpRESTProvider>();
                 var matchRequest = new MatchRequest { SizePreference = 6, AttributePreference = "localknowledge" };
-                string mockUrl = "127.0.0.1";
 
                 var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(It.IsAny<string>(), It.IsAny<MatchRequest>())).Returns(Task.FromResult(agentTest));
 
