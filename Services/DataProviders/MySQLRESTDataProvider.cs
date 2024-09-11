@@ -1,5 +1,4 @@
 ﻿using LAF.Models.BusinessObjects;
-using LAF.Models.Config;
 using LAF.Services.Classes;
 using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;

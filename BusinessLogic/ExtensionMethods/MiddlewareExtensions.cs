@@ -37,20 +37,28 @@ namespace LAF
                     {
                         Type? tInterface = tServiceName.GetInterface($"LAF.Services.DataProviders.I{dataProviderOptionsDict[key].ServiceType}Options");
 
-                        DataProviderOptions options = dataProviderOptionsDict[key];
-
-                        var provider = Activator.CreateInstance(tServiceName, options);
-
-                        if (provider != null)
+                        if (tInterface != null)
                         {
-                            //Since we cannot specify generics at runtime, we cannot use the IOptions pattern.
-                            //It looks like this is the only way of registering the data options subclasses as services.
-                            //But these aren't managed services - they need to be disposed.
-                            // services.Add(new ServiceDescriptor(typeof(IDataProviderOptions), tServiceName, ServiceLifetime.Scoped));
+                            DataProviderOptions options = dataProviderOptionsDict[key];
 
-                            //Or ... (only use one!)
-                            services.AddScoped(tInterface!, implementationFactory: sProvider => { return provider; });
+                            var provider = Activator.CreateInstance(tServiceName, options);
+
+                            if (provider != null)
+                            {
+                                //Since we cannot specify generics at runtime, we cannot use the IOptions pattern.
+                                //It looks like this is the only way of registering the data options subclasses as services.
+                                //But these aren't managed services - they need to be disposed.
+                                services.AddScoped(tInterface, implementationFactory: sProvider => { return provider; });
+                            }
                         }
+                        else
+                        {
+                            throw new Exception($"Interface LAF.Services.DataProviders.I{dataProviderOptionsDict[key].ServiceType}Options not found.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Class LAF.Services.DataProviders.{dataProviderOptionsDict[key].ServiceType}Options not found.");
                     }
                 }
 
@@ -70,7 +78,6 @@ namespace LAF
                     .GetExportedTypes()
                     .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
 
-                /*
                 //Register DataProvider implementations.
                 foreach (var type in typeof(IAgentDataProvider).Assembly!.GetTypesAssignableFrom<IAgentDataProvider>())
                 {
@@ -79,8 +86,8 @@ namespace LAF
                         services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
                     }
                 }
-                */
                 
+                /*
                 //Delete this if not needed.
                 if (assemName != null)
                 {
@@ -93,7 +100,7 @@ namespace LAF
                         }
                     }
                 }
-                
+                */
 
                 services.AddScoped<IHttpRESTProvider, HttpRESTProvider>();
                 services.AddScoped<IDataProviderResolverService, DataServiceResolver>();

@@ -2,8 +2,6 @@
 {
     namespace Models.Config
     {
-
-
         public class ServiceConfigurationOptions
         {
             public const string ServiceConfiguration = "ServiceConfiguration";
@@ -15,6 +13,5 @@
         {
             public const string DataProviders = "DataServiceProviders";
         }
-
     }
 }

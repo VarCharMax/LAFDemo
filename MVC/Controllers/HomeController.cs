@@ -10,14 +10,19 @@ namespace LAF
         {
             private readonly IAgentDataProvider? dataService;
 
-            public HomeController(IDataProviderResolverService dataProviderService) {
-                if (dataProviderService != null)
+            public HomeController(IDataProviderResolverService dataProviderResolverService) {
+                if (dataProviderResolverService != null)
                 {
-                    dataService = dataProviderService.GetProviderService();
+                    dataService = dataProviderResolverService.GetProviderService();
+
+                    if (dataService == null)
+                    {
+                        throw new ArgumentNullException("DataProvider service not found.");
+                    }
                 }
                 else
                 {
-                    throw new NullReferenceException("DataProvider service not found.");
+                    throw new NullReferenceException("DataProvider Resolver service not found.");
                 }
             }
 
