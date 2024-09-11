@@ -1,10 +1,6 @@
-﻿using LAF.BusinessLogic.ServiceResolver;
-using LAF.Middleware;
-using LAF.Models.Interfaces.Services;
+﻿using LAF.Middleware;
 using LAF.Services.Classes;
 using LAF.Services.DataProviders.Interfaces;
-using LAF.Services.Interfaces;
-using LAF.Services.Providers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,10 +69,12 @@ namespace LAF
                 //List of names of all registered Data Providers.
                 var serviceConfigNames = dataProviderOptionsDict.Select(s => s.Key).ToList();
 
+                /*
                 //Get all DataProviders from Services assembly.
                 var assemName = typeof(IAgentDataProvider).Assembly
                     .GetExportedTypes()
                     .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
+                */
 
                 //Register DataProvider implementations.
                 foreach (var type in typeof(IAgentDataProvider).Assembly!.GetTypesAssignableFrom<IAgentDataProvider>())

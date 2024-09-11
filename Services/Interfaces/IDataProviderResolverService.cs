@@ -6,7 +6,7 @@ namespace LAF
     {
         public interface IDataProviderResolverService
         {
-            public IAgentDataProvider GetProviderService();
+            public IAgentDataProvider GetProviderService(string overrideService = "");
         }
     }
 }
