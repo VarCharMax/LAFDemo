@@ -49,7 +49,7 @@ namespace LAF
             public async Task ServicesReturnDataAsync()
             {
                 /*
-                 * Test using minimal mocks.
+                 * Testing all data services using minimal mocks.
                  * All services are real except for HttpProvider.
                  * Should probably be called after all services have been individually tested, to show that they all work together.
                  */

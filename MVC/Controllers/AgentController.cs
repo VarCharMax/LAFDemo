@@ -29,8 +29,7 @@ namespace LAF
 
                 return View();
             }
-
-            // GET: AgentController/MatchAgent/5
+            
             public async Task<ActionResult> MatchAgentAsync([FromBody] MatchRequest request)
             {
                 int requestCount = 0;
