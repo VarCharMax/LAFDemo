@@ -69,13 +69,6 @@ namespace LAF
                 //List of names of all registered Data Providers.
                 var serviceConfigNames = dataProviderOptionsDict.Select(s => s.Key).ToList();
 
-                /*
-                //Get all DataProviders from Services assembly.
-                var assemName = typeof(IAgentDataProvider).Assembly
-                    .GetExportedTypes()
-                    .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
-                */
-
                 //Register DataProvider implementations.
                 foreach (var type in typeof(IAgentDataProvider).Assembly!.GetTypesAssignableFrom<IAgentDataProvider>())
                 {
@@ -84,7 +77,14 @@ namespace LAF
                         services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
                     }
                 }
-                
+
+                /*
+                //Get all DataProviders from Services assembly.
+                var assemName = typeof(IAgentDataProvider).Assembly
+                    .GetExportedTypes()
+                    .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
+                */
+
                 /*
                 //Delete this if not needed.
                 if (assemName != null)

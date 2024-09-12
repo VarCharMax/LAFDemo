@@ -5,6 +5,7 @@ using LAF.Models.Interfaces.Services;
 using LAF.MVC.Controllers;
 using LAF.Services.Classes;
 using LAF.Services.DataProviders;
+using LAF.Services.DataProviders.Interfaces;
 using LAF.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +47,56 @@ namespace LAF
             }
 
             [Fact]
-            public async Task ServicesReturnDataAsync()
+            public void DataServicesAllLoad()
+            {
+                var agentTest = new Agent { LicenseNo = "1234", Name = "Dorian Gray" };
+                var mockHttpService = new Mock<IHttpRESTProvider>();
+
+                var httpType = mockHttpService.Setup(p => p.MatchAgentAsync(It.IsAny<string>(), It.IsAny<MatchRequest>())).Returns(Task.FromResult(agentTest));
+
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .Build();
+
+                var builder = WebApplication.CreateBuilder();
+
+                IServiceCollection services = new ServiceCollection()
+                    .AddSingleton<IConfiguration>(config)
+                    .AddScoped(provider => mockHttpService.Object)
+                    .AddDataProviderServiceConfig(builder.Configuration)
+                    .AddDataProviderServiceGroup(builder.Configuration)
+                    .AddScoped<IDataProviderResolverService, DataServiceResolver>();
+
+                var serviceNames = builder.Configuration.GetDataProviderServiceOptions().Select(d => d.Key).ToList();
+
+                var sp = services.BuildServiceProvider();
+
+                List<IAgentDataProvider> foundServices = [];
+
+                foreach (var item in serviceNames)
+                {
+                    // Looks like keyed services are not returned via GetService().
+                    // Must use GetKeyedServices<IAgentDataProvider>("serviceName").
+
+                    var svc = sp.GetKeyedService<IAgentDataProvider>(item);
+
+                    if (svc != null)
+                    {
+                        foundServices.Add(svc);
+                    }
+                }
+               
+               Assert.Equal(3, foundServices.Count);
+
+                Assert.Collection(foundServices,
+                   e => Assert.IsAssignableFrom<IAgentDataProvider>(e),
+                   e => Assert.IsAssignableFrom<IAgentDataProvider>(e),
+                   e => Assert.IsAssignableFrom<IAgentDataProvider>(e)
+                );
+            }
+
+            [Fact]
+            public async Task ServicesAllReturnDataAsync()
             {
                 /*
                  * Testing all data services in combination using minimal mocks.
