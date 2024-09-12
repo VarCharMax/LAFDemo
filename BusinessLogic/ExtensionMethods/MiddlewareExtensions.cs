@@ -78,28 +78,6 @@ namespace LAF
                     }
                 }
 
-                /*
-                //Get all DataProviders from Services assembly.
-                var assemName = typeof(IAgentDataProvider).Assembly
-                    .GetExportedTypes()
-                    .Where(t => t.IsClass && t.IsPublic && t.GetInterface("IAgentDataProvider")?.Name == "IAgentDataProvider");
-                */
-
-                /*
-                //Delete this if not needed.
-                if (assemName != null)
-                {
-                    // Register as services all types that implement IAgentDataProvider interface
-                    foreach (Type type in assemName)
-                    {
-                        if (serviceConfigNames.Contains(type.Name))
-                        {
-                            services.AddKeyedScoped(typeof(IAgentDataProvider), type.Name, type);
-                        }
-                    }
-                }
-                */
-
                 return services;
             }
         }
