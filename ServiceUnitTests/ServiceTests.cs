@@ -64,8 +64,7 @@ namespace LAF
                     .AddSingleton<IConfiguration>(config)
                     .AddScoped(provider => mockHttpService.Object)
                     .AddDataProviderServiceConfig(builder.Configuration)
-                    .AddDataProviderServiceGroup(builder.Configuration)
-                    .AddScoped<IDataProviderResolverService, DataServiceResolver>();
+                    .AddDataProviderServiceGroup(builder.Configuration);
 
                 var serviceNames = builder.Configuration.GetDataProviderServiceOptions().Select(d => d.Key).ToList();
 
